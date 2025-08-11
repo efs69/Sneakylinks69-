@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sneakylinks — Hostels & Gadgets (Pro Editable)</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f172a; /* midnight blue */
+    --card: rgba(255,255,255,0.04);
+    --muted: #9aa4bf;
+    --accent:#00f5d4; /* neon aqua */
+    --accent-2:#7b2ff7; /* soft purple */
+    --gold:#d19a2b;
+    --glass: rgba(255,255,255,0.04);
+    --radius:14px;
+    --max-width:1100px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter, Poppins, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;background:linear-gradient(180deg,#0f172a 0%, #071022 100%);color:#e6eef8;-webkit-font-smoothing:antialiased;}
+  a{color:inherit}
+  /* Topbar */
+  .topbar{position:sticky;top:0;z-index:1200;background:linear-gradient(90deg, rgba(15,23,42,0.95), rgba(7,16,34,0.95));backdrop-filter:blur(6px);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(255,255,255,0.03)}
+  .brand{display:flex;align-items:center;gap:12px;color:var(--accent);text-decoration:none;cursor:pointer}
+  .logo{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#071022;font-weight:800;font-size:18px;box-shadow:0 8px 30px rgba(123,47,247,0.12)}
+  .brand h1{margin:0;font-size:18px;color:#e6eef8}
+  .brand small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+  .top-controls{display:flex;gap:10px;align-items:center}
+  .cta{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#071022;padding:10px 14px;border-radius:10px;border:none;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(0,245,212,0.08)}
+  .ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 12px;border-radius:10px;cursor:pointer}
+  /* Floating edit button (hidden until unlocked) */
+  .floating-edit{position:fixed;right:18px;bottom:18px;width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 14px 30px rgba(0,245,212,0.12);color:#071022;font-weight:800;border:none;cursor:pointer;transform:translateY(20px);opacity:0;transition:transform .36s cubic-bezier(.2,.9,.3,1),opacity .36s;z-index:3000}
+  .floating-edit.visible{transform:translateY(0);opacity:1}
+  .floating-edit .dot{width:10px;height:10px;background:#071022;border-radius:50%}
+  /* Hero */
+  .hero{max-width:var(--max-width);margin:18px auto;padding:30px;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;gap:18px;align-items:center;overflow:hidden}
+  .hero-left{flex:1;min-width:0}
+  .hero-right{width:360px;display:flex;align-items:center;justify-content:center}
+  .hero h2{font-family:Poppins, sans-serif;font-size:28px;margin:0 0 10px;color:#f8fbff;line-height:1.02}
+  .hero p{margin:0;color:var(--muted)}
+  .hero .actions{margin-top:14px;display:flex;gap:10px}
+  .hero-illus{width:100%;height:160px;border-radius:12px;overflow:hidden;background:linear-gradient(90deg,rgba(123,47,247,0.12),rgba(0,245,212,0.08));display:flex;align-items:center;justify-content:center}
+  .hero-illus img{width:100%;height:100%;object-fit:cover;filter:contrast(.95) saturate(1.05)}
+  /* Container */
+  .container{max-width:var(--max-width);margin:18px auto;padding:0 18px}
+  /* Controls */
+  .controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap}
+  .tab{background:transparent;padding:8px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);cursor:pointer;color:var(--muted);font-weight:600}
+  .tab.active{background:linear-gradient(90deg, rgba(0,245,212,0.06), rgba(123,47,247,0.04));color:#f8fbff;border-color:rgba(0,245,212,0.18)}
+  .search{display:flex;gap:8px;align-items:center}
+  .search input{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#e6eef8;min-width:220px}
+  /* Grid */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;transition:all .28s ease}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:10px;border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:8px;cursor:pointer;overflow:hidden;min-height:230px}
+  .card:hover{transform:translateY(-6px);box-shadow:0 18px 48px rgba(7,12,28,0.6)}
+  .thumb{height:140px;border-radius:12px;overflow:hidden;background:linear-gradient(90deg, rgba(123,47,247,0.06), rgba(0,245,212,0.04));display:block}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+  .card:hover .thumb img{transform:scale(1.04)}
+  .title{font-weight:700;color:#f8fbff}
+  .spec{font-size:13px;color:var(--muted);margin-top:6px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto}
+  .price{font-weight:800;color:var(--accent-2)}
+  .card .actions{display:flex;gap:8px}
+  .btn{padding:8px 10px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+  .btn.view{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+  .btn.book{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#071022}
+  /* Modal */
+  .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(1,6,12,0.6);backdrop-filter:blur(6px);z-index:4000;padding:18px}
+  .modal{width:100%;max-width:760px;border-radius:14px;padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);color:#eaf6f1;display:grid;grid-template-columns:260px 1fr;gap:16px}
+  .modal .image{width:100%;height:220px;border-radius:10px;overflow:hidden}
+  .modal .image img{width:100%;height:100%;object-fit:cover}
+  .modal h3{margin:0 0 8px;font-size:20px;color:#fff}
+  .modal .price{color:var(--accent);font-weight:800}
+  .modal label{display:block;margin-top:8px;color:var(--muted);font-size:13px}
+  .modal input, .modal select{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#e6eef8;margin-top:6px}
+  .modal .send{margin-top:12px;padding:10px;border-radius:10px;border:none;cursor:pointer;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#071022;font-weight:800}
+  /* toast */
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:28px;background:rgba(255,255,255,0.04);color:#eaf6f1;padding:8px 14px;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .28s,transform .28s;z-index:6000}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
+  /* Unlock hint area (invisible) */
+  .unlock{position:fixed;top:0;left:0;width:100%;height:48px;z-index:500;opacity:0}
+  /* Responsive */
+  @media (max-width:900px){ .grid{grid-template-columns:1fr} .hero-right{display:none} .hero h2{font-size:22px} .modal{grid-template-columns:1fr} .modal .image{height:240px} .thumb{height:180px} }
+  @media (max-width:480px){ .hero{padding:18px} .hero h2{font-size:20px} .topbar{padding:10px} .logo{width:42px;height:42px} .floating-edit{right:12px;bottom:12px} }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<header class="topbar">
+  <div class="brand" id="brand">
+    <div class="logo" id="logo">SL</div>
+    <div>
+      <h1>Sneakylinks</h1>
+      <small>Hostels & Gadgets</small>
+    </div>
+  </div>
+  <div class="top-controls">
+    <button class="cta" onclick="document.getElementById('searchInput').focus()">Browse</button>
+    <button class="ghost" id="browseBtn" onclick="document.getElementById('productGrid').scrollIntoView({behavior:'smooth'})">Products</button>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero" role="region" aria-label="Hero">
+  <div class="hero-left">
+    <h2>Premium hostels & trusted gadgets — book in seconds</h2>
+    <p>Fast WhatsApp booking, clean listings and instant confirmations. Edit content from your phone — no code.</p>
+    <div class="actions">
+      <button class="cta" onclick="document.getElementById('productGrid').scrollIntoView({behavior:'smooth'})">Shop Now</button>
+      <button class="ghost" onclick="document.getElementById('searchInput').focus()">Search</button>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-illus" aria-hidden="true">
+      <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=bbb222" alt="Hero illustration">
+    </div>
+  </div>
+</section>
+
+<main class="container">
+  <!-- Controls -->
+  <div class="controls">
+    <div class="tabs" role="tablist" aria-label="Categories">
+      <button class="tab active" data-filter="all" onclick="setTab(this)">All</button>
+      <button class="tab" data-filter="hostel" onclick="setTab(this)">Hostels</button>
+      <button class="tab" data-filter="gadget" onclick="setTab(this)">Gadgets</button>
+    </div>
+    <div class="search">
+      <input id="searchInput" placeholder="Search e.g. AC, Laptop" oninput="applyFilters()" />
+      <button class="ghost" onclick="clearSearch()">Clear</button>
+    </div>
+  </div>
+
+  <!-- Products grid -->
+  <section id="products">
+    <div class="grid" id="productGrid">
+
+      <article class="card" data-index="0" data-type="hostel" data-name="Skyline View Hostel" data-price="GH₵ 1,300/mo">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1505691723518-36a1fb8d6a81?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=1a6e3a3b6e6d5f4b3d2f8b1e2d3f4a5b" alt="Skyline View Hostel" /></div>
+        <div class="title">Skyline View Hostel</div>
+        <div class="spec">2-Bedroom • Wi‑Fi • AC</div>
+        <div class="row">
+          <div class="price">GH₵ 1,300/mo</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="1" data-type="gadget" data-name="ProX Max Phone" data-price="GH₵ 3,500">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=6b2d5b9a1f8c7c6e5d4e3f2a1b0c9d8e" alt="ProX Max Phone" /></div>
+        <div class="title">ProX Max Phone</div>
+        <div class="spec">128GB • 5G • Dual Cam</div>
+        <div class="row">
+          <div class="price">GH₵ 3,500</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="2" data-type="hostel" data-name="Cozy Corner Suites" data-price="GH₵ 1,100/mo">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=abc123" alt="Cozy Corner Suites" /></div>
+        <div class="title">Cozy Corner Suites</div>
+        <div class="spec">Studio • Furnished • Secure</div>
+        <div class="row">
+          <div class="price">GH₵ 1,100/mo</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="3" data-type="gadget" data-name="ZenBook Ultra 14"" data-price="GH₵ 5,800">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=def456" alt="ZenBook Ultra 14"" /></div>
+        <div class="title">ZenBook Ultra 14"</div>
+        <div class="spec">16GB RAM • 512GB SSD</div>
+        <div class="row">
+          <div class="price">GH₵ 5,800</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="4" data-type="hostel" data-name="Balcony Breeze" data-price="GH₵ 1,450/mo">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1505692794406-229b7d3d9b6b?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=789abc" alt="Balcony Breeze" /></div>
+        <div class="title">Balcony Breeze</div>
+        <div class="spec">Balcony • Parking • Kitchen</div>
+        <div class="row">
+          <div class="price">GH₵ 1,450/mo</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="5" data-type="gadget" data-name="AceCam 4K" data-price="GH₵ 4,200">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1519183071298-a2962be54a90?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=aaa111" alt="AceCam 4K" /></div>
+        <div class="title">AceCam 4K</div>
+        <div class="spec">24MP • 4K • Wi‑Fi</div>
+        <div class="row">
+          <div class="price">GH₵ 4,200</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="6" data-type="hostel" data-name="Student Nest" data-price="GH₵ 650/mo">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=bbb222" alt="Student Nest" /></div>
+        <div class="title">Student Nest</div>
+        <div class="spec">Shared • Near Campus • Wi‑Fi</div>
+        <div class="row">
+          <div class="price">GH₵ 650/mo</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="7" data-type="gadget" data-name="WavePods Pro" data-price="GH₵ 650">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1518444022271-4b4e6f4f1b01?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=ccc333" alt="WavePods Pro" /></div>
+        <div class="title">WavePods Pro</div>
+        <div class="spec">Wireless • Noise Cancel</div>
+        <div class="row">
+          <div class="price">GH₵ 650</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="8" data-type="hostel" data-name="Urban Retreat" data-price="GH₵ 980/mo">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=ddd444" alt="Urban Retreat" /></div>
+        <div class="title">Urban Retreat</div>
+        <div class="spec">1-Bedroom • AC • Shops</div>
+        <div class="row">
+          <div class="price">GH₵ 980/mo</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="9" data-type="gadget" data-name="GameStation X" data-price="GH₵ 3,900">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1587202372775-0c7f3d1f1f4b?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=eee555" alt="GameStation X" /></div>
+        <div class="title">GameStation X</div>
+        <div class="spec">Console • 1TB • HDR</div>
+        <div class="row">
+          <div class="price">GH₵ 3,900</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="10" data-type="hostel" data-name="Harbor Lights" data-price="GH₵ 1,550/mo">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=fff666" alt="Harbor Lights" /></div>
+        <div class="title">Harbor Lights</div>
+        <div class="spec">Furnished • Balcony • Secure</div>
+        <div class="row">
+          <div class="price">GH₵ 1,550/mo</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="11" data-type="gadget" data-name="DroneFly 1080" data-price="GH₵ 2,900">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1508610048659-a06a3efab1b5?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=ggg777" alt="DroneFly 1080" /></div>
+        <div class="title">DroneFly 1080</div>
+        <div class="spec">HD Camera • Easy Control</div>
+        <div class="row">
+          <div class="price">GH₵ 2,900</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="12" data-type="hostel" data-name="Maple Residency" data-price="GH₵ 1,350/mo">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1505691723518-36a1fb8d6a81?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=hhh888" alt="Maple Residency" /></div>
+        <div class="title">Maple Residency</div>
+        <div class="spec">2-Bed • Kitchen • Parking</div>
+        <div class="row">
+          <div class="price">GH₵ 1,350/mo</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="13" data-type="gadget" data-name="PocketTab 10"" data-price="GH₵ 2,150">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=iii999" alt="PocketTab 10"" /></div>
+        <div class="title">PocketTab 10"</div>
+        <div class="spec">10in • 64GB • LTE</div>
+        <div class="row">
+          <div class="price">GH₵ 2,150</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="14" data-type="hostel" data-name="Lakeside Rooms" data-price="GH₵ 1,020/mo">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=jjj000" alt="Lakeside Rooms" /></div>
+        <div class="title">Lakeside Rooms</div>
+        <div class="spec">Studio • Scenic View</div>
+        <div class="row">
+          <div class="price">GH₵ 1,020/mo</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="15" data-type="gadget" data-name="SoundBase Mini" data-price="GH₵ 720">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1518544882660-3e6b0b7f9b7f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=kkk111" alt="SoundBase Mini" /></div>
+        <div class="title">SoundBase Mini</div>
+        <div class="spec">Bluetooth • Rich Bass</div>
+        <div class="row">
+          <div class="price">GH₵ 720</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="16" data-type="hostel" data-name="Central Suites" data-price="GH₵ 1,180/mo">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=lll222" alt="Central Suites" /></div>
+        <div class="title">Central Suites</div>
+        <div class="spec">Near Transport • Furnished</div>
+        <div class="row">
+          <div class="price">GH₵ 1,180/mo</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="17" data-type="gadget" data-name="EcoPrinter" data-price="GH₵ 1,250">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=mmm333" alt="EcoPrinter" /></div>
+        <div class="title">EcoPrinter</div>
+        <div class="spec">Wireless • Color</div>
+        <div class="row">
+          <div class="price">GH₵ 1,250</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="18" data-type="hostel" data-name="Sunrise Lodge" data-price="GH₵ 580/mo">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=nnn444" alt="Sunrise Lodge" /></div>
+        <div class="title">Sunrise Lodge</div>
+        <div class="spec">Shared • Budget • Clean</div>
+        <div class="row">
+          <div class="price">GH₵ 580/mo</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-index="19" data-type="gadget" data-name="ClipCam Action" data-price="GH₵ 2,450">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1503602642458-232111445657?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=ooo555" alt="ClipCam Action" /></div>
+        <div class="title">ClipCam Action</div>
+        <div class="spec">Waterproof • 4K</div>
+        <div class="row">
+          <div class="price">GH₵ 2,450</div>
+          <div class="actions">
+            <button class="btn view" onclick="viewDetails(event,this)">View</button>
+            <button class="btn book" onclick="bookNow(event,this)">Book</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+  <!-- Request a Product -->
+  <section id="request" style="max-width:var(--max-width);margin:28px auto;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);">
+    <h3 style="margin:0 0 8px;color:#fff;font-family:Poppins, sans-serif;">Request a Product</h3>
+    <p style="margin:0 0 12px;color:var(--muted);">Can't find what you need? Describe it below and we'll send your request to our WhatsApp team.</p>
+    <form id="requestForm" style="display:grid;gap:10px;">
+      <label style="color:var(--muted);font-size:13px;">Preferred product (describe what you want)</label>
+      <textarea id="reqProduct" rows="3" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#e6eef8" placeholder="e.g. ProX Max Phone 128GB, black, or 2-bedroom hostel near campus"></textarea>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div>
+          <label style="color:var(--muted);font-size:13px;">Your name</label>
+          <input id="reqName" type="text" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#e6eef8" placeholder="John Doe" />
+        </div>
+        <div>
+          <label style="color:var(--muted);font-size:13px;">Location</label>
+          <input id="reqLocation" type="text" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#e6eef8" placeholder="City, Area" />
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div>
+          <label style="color:var(--muted);font-size:13px;">Telephone number</label>
+          <input id="reqPhone" type="tel" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#e6eef8" placeholder="059xxxxxxx" />
+        </div>
+        <div>
+          <label style="color:var(--muted);font-size:13px;">Send to WhatsApp</label>
+          <select id="reqWhatsapp" style="width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:#e6eef8">
+            <option value="">Choose number</option>
+            <option value="0597053192">0597053192</option>
+            <option value="0594708232">0594708232</option>
+            <option value="0594438054">0594438054</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button type="button" id="clearReq" class="ghost" style="padding:10px 14px;border-radius:10px;">Clear</button>
+        <button type="submit" class="cta" style="padding:10px 14px;border-radius:10px;">Send Request</button>
+      </div>
+    </form>
+  </section>
+  <script>
+    // Request form handler
+    (function(){
+      const form = document.getElementById('requestForm');
+      const textarea = document.getElementById('reqProduct');
+      const name = document.getElementById('reqName');
+      const location = document.getElementById('reqLocation');
+      const phone = document.getElementById('reqPhone');
+      const whatsapp = document.getElementById('reqWhatsapp');
+      const clearBtn = document.getElementById('clearReq');
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        const prod = textarea.value.trim();
+        const n = name.value.trim();
+        const loc = location.value.trim();
+        const ph = phone.value.trim();
+        const wa = whatsapp.value;
+        if(!prod){ alert('Please describe the product you want.'); textarea.focus(); return; }
+        if(!n){ alert('Please enter your name.'); name.focus(); return; }
+        if(!ph){ alert('Please enter your phone number.'); phone.focus(); return; }
+        if(!wa){ alert('Please choose a WhatsApp number to send the request to.'); whatsapp.focus(); return; }
+        const message = `Product Request:%0APreferred: ${encodeURIComponent(prod)}%0AName: ${encodeURIComponent(n)}%0ALocation: ${encodeURIComponent(loc)}%0APhone: ${encodeURIComponent(ph)}`;
+        const waNumber = '233' + wa.slice(1);
+        window.open(`https://wa.me/${waNumber}?text=${message}`, '_blank');
+      });
+      clearBtn.addEventListener('click', function(){ textarea.value=''; name.value=''; location.value=''; phone.value=''; whatsapp.value=''; });
+    })();
+  </script>
+
+
+<!-- Modal for booking & quick edit -->
+<div class="overlay" id="overlay" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="image"><img id="modalImg" src="" alt=""></div>
+    <div>
+      <h3 id="modalTitle">Product name</h3>
+      <div class="price" id="modalPrice">Price</div>
+      <form id="modalForm">
+        <label for="customerName">Name</label>
+        <input id="customerName" type="text" required />
+        <label for="customerLocation">Location</label>
+        <input id="customerLocation" type="text" required />
+        <label for="customerPhone">Telephone number</label>
+        <input id="customerPhone" type="tel" required />
+        <label for="whatsappNumber">Send booking to</label>
+        <select id="whatsappNumber" required>
+          <option value="">Choose number</option>
+          <option value="0597053192">0597053192</option>
+          <option value="0594708232">0594708232</option>
+          <option value="0594438054">0594438054</option>
+        </select>
+        <button class="send" type="submit">Send Booking via WhatsApp</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Floating edit button (appears after login) -->
+<button id="floatingEdit" class="floating-edit" aria-label="Edit Mode">
+  <span class="dot"></span>
+</button>
+
+<div class="toast" id="toast">Saved</div>
+<div class="unlock" id="unlockArea" title="Hidden unlock area"></div>
+
+<footer style="max-width:var(--max-width);margin:24px auto;padding:0 18px;color:var(--muted);text-align:center">
+  © Sneakylinks — Built with care • Edit on your phone
+</footer>
+
+<script>
+/* Configuration */
+const PASSWORD = 'sneaky123';
+const LS_KEY = 'sneakylinks_v3';
+
+/* Elements */
+const grid = document.getElementById('productGrid');
+const cards = ()=>document.querySelectorAll('.card');
+const toast = document.getElementById('toast');
+const overlay = document.getElementById('overlay');
+const modalImg = document.getElementById('modalImg');
+const modalTitle = document.getElementById('modalTitle');
+const modalPrice = document.getElementById('modalPrice');
+const modalForm = document.getElementById('modalForm');
+const floatingEdit = document.getElementById('floatingEdit');
+const unlockArea = document.getElementById('unlockArea');
+const logo = document.getElementById('logo');
+const brand = document.getElementById('brand');
+
+let unlocked = false;
+let editMode = false;
+let lastTap = 0;
+let tapCount = 0;
+
+/* Show toast */
+function showToast(msg='Saved'){
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(()=> toast.classList.remove('show'), 1600);
+}
+
+/* Save to localStorage */
+function saveAll(){
+  const data = [];
+  document.querySelectorAll('.card').forEach(card=>{
+    data.push({
+      img: card.querySelector('img')?.src || '',
+      name: card.querySelector('.title')?.innerText || '',
+      spec: card.querySelector('.spec')?.innerText || '',
+      price: card.querySelector('.price')?.innerText || '',
+      type: card.dataset.type || ''
+    });
+  });
+  localStorage.setItem(LS_KEY, JSON.stringify(data));
+  showToast('Saved');
+}
+
+/* Load from storage */
+function loadAll(){
+  const raw = localStorage.getItem(LS_KEY);
+  if(!raw) return;
+  try{
+    const arr = JSON.parse(raw);
+    const nodes = document.querySelectorAll('.card');
+    arr.forEach((it,i)=>{
+      if(nodes[i]){
+        if(it.img) nodes[i].querySelector('img').src = it.img;
+        if(it.name) nodes[i].querySelector('.title').innerText = it.name;
+        if(it.spec) nodes[i].querySelector('.spec').innerText = it.spec;
+        if(it.price) nodes[i].querySelector('.price').innerText = it.price;
+      }
+    });
+  }catch(e){ console.error(e); }
+}
+
+/* Unlock flow: desktop L key or mobile logo taps */
+window.addEventListener('keydown', (e)=>{
+  if(e.key === 'L' || e.key === 'l') promptPassword();
+});
+
+// Mobile: tap logo 5 times quickly to trigger password
+logo.addEventListener('click', ()=>{
+  const now = Date.now();
+  if(now - lastTap < 700){ tapCount++; } else { tapCount = 1; }
+  lastTap = now;
+  if(tapCount >= 5){ promptPassword(); tapCount = 0; }
+});
+
+// Also long-press unlock area (2.2s)
+let lpTimer = null;
+unlockArea.addEventListener('touchstart', ()=>{ lpTimer = setTimeout(()=> promptPassword(), 2200); });
+unlockArea.addEventListener('touchend', ()=>{ clearTimeout(lpTimer); });
+
+function promptPassword(){
+  const pw = prompt('Enter edit password:');
+  if(pw === PASSWORD){ unlocked = true; showFloatingButton(); alert('Unlocked — tap the floating button to enter Edit Mode.'); }
+  else if(pw !== null) alert('Wrong password');
+}
+
+/* Show floating button */
+function showFloatingButton(){
+  floatingEdit.classList.add('visible');
+  // slide in animation handled by CSS via class
+}
+
+/* Toggle edit mode */
+floatingEdit.addEventListener('click', ()=>{
+  if(!unlocked) return;
+  editMode = !editMode;
+  floatingEdit.textContent = editMode ? '✎' : ''; // simple visual
+  if(editMode){
+    floatingEdit.style.boxShadow = '0 18px 40px rgba(123,47,247,0.16)';
+    enableEditing();
+  } else {
+    floatingEdit.style.boxShadow = '0 14px 30px rgba(0,245,212,0.12)';
+    disableEditing();
+    saveAll();
+  }
+  // update aria
+  floatingEdit.setAttribute('aria-pressed', String(editMode));
+});
+
+/* Enable editing: contenteditable and image upload handlers */
+function enableEditing(){
+  document.querySelectorAll('.card').forEach(card=>{
+    card.querySelector('.title').setAttribute('contenteditable','true');
+    card.querySelector('.spec').setAttribute('contenteditable','true');
+    card.querySelector('.price').setAttribute('contenteditable','true');
+    card.querySelector('img').style.cursor = 'pointer';
+    // attach taps for image change and long-press for mobile edit
+    attachImageTap(card);
+  });
+  // also make modal title/price editable when open
+  modalTitle.setAttribute('contenteditable','true');
+  modalPrice.setAttribute('contenteditable','true');
+}
+
+/* Disable editing */
+function disableEditing(){
+  document.querySelectorAll('.card').forEach(card=>{
+    card.querySelector('.title').removeAttribute('contenteditable');
+    card.querySelector('.spec').removeAttribute('contenteditable');
+    card.querySelector('.price').removeAttribute('contenteditable');
+    card.querySelector('img').style.cursor = 'default';
+  });
+  modalTitle.removeAttribute('contenteditable');
+  modalPrice.removeAttribute('contenteditable');
+}
+
+/* Attach image tap handler to a card */
+function attachImageTap(card){
+  const img = card.querySelector('img');
+  // remove previous handlers to avoid duplicates
+  img.onclick = null;
+  img.addEventListener('click', (e)=>{
+    if(!editMode) return;
+    e.stopPropagation();
+    changeImage(img, card);
+  });
+  // long-press on card to enter edit mode quickly on mobile
+  let timer = null;
+  card.addEventListener('touchstart', (ev)=>{ timer = setTimeout(()=>{ if(!unlocked){ promptPassword(); } else if(!editMode){ editMode=true; enableEditing(); floatingEdit.classList.add('visible'); floatingEdit.textContent='✎'; } }, 900); });
+  card.addEventListener('touchend', ()=>{ clearTimeout(timer); });
+}
+
+/* Change image: choose upload or paste URL */
+function changeImage(imgEl, card){
+  const choice = confirm('Upload from device? OK = upload. Cancel = paste image URL.');
+  if(choice){
+    // create input
+    const input = document.createElement('input');
+    input.type='file'; input.accept='image/*'; input.capture='environment';
+    input.onchange = (ev)=>{
+      const file = ev.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = (r)=>{
+        imgEl.src = r.target.result;
+        showToast();
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  } else {
+    const url = prompt('Paste image URL:', imgEl.src);
+    if(url){ imgEl.src = url; showToast(); }
+  }
+}
+
+/* Open modal from card */
+function openModalFromCard(card){
+  const img = card.querySelector('img')?.src || '';
+  const title = card.querySelector('.title')?.innerText || '';
+  const price = card.querySelector('.price')?.innerText || '';
+  modalImg.src = img; modalTitle.innerText = title; modalPrice.innerText = price;
+  overlay.style.display = 'flex'; overlay.setAttribute('aria-hidden','false');
+  overlay.dataset.currentIndex = card.dataset.index;
+  // if in editMode allow editing in modal
+  if(editMode){ modalTitle.setAttribute('contenteditable','true'); modalPrice.setAttribute('contenteditable','true'); } else { modalTitle.removeAttribute('contenteditable'); modalPrice.removeAttribute('contenteditable'); }
+}
+
+/* Close modal */
+overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModal(); });
+function closeModal(){ overlay.style.display='none'; overlay.setAttribute('aria-hidden','true'); overlay.dataset.currentIndex=''; saveAll(); }
+
+/* Handlers for view/book buttons */
+function viewDetails(e,btn){ e.stopPropagation(); const card = btn.closest('.card'); openModalFromCard(card); }
+function bookNow(e,btn){ e.stopPropagation(); const card = btn.closest('.card'); openModalFromCard(card); }
+
+/* Modal image change when in editMode */
+modalImg.addEventListener('click', (e)=>{
+  if(!editMode) return;
+  changeImage(modalImg, document.querySelector(`.card[data-index='${overlay.dataset.currentIndex}']`));
+  // sync back to card if any change
+  syncModalToCard();
+});
+
+/* Modal title/price focusout sync */
+modalTitle.addEventListener('focusout', ()=>{ if(editMode) syncModalToCard(); });
+modalPrice.addEventListener('focusout', ()=>{ if(editMode) syncModalToCard(); });
+
+function syncModalToCard(){
+  const idx = overlay.dataset.currentIndex;
+  if(!idx && idx !== 0) return;
+  const card = document.querySelector(`.card[data-index='${idx}']`);
+  if(!card) return;
+  card.querySelector('.title').innerText = modalTitle.innerText;
+  card.querySelector('.price').innerText = modalPrice.innerText;
+  card.querySelector('img').src = modalImg.src;
+  showToast();
+}
+
+/* Save edits when contenteditable fields change */
+document.addEventListener('input', (e)=>{
+  if(!editMode) return;
+  const card = e.target.closest('.card');
+  if(card){
+    // live update data attributes
+    card.dataset.name = card.querySelector('.title').innerText.trim();
+    card.dataset.price = card.querySelector('.price').innerText.trim();
+  }
+});
+
+/* Save on focusout */
+document.addEventListener('focusout', (e)=>{
+  if(!editMode) return;
+  if(e.target && (e.target.classList.contains('title') || e.target.classList.contains('spec') || e.target.classList.contains('price'))){
+    saveAll();
+  }
+});
+
+/* Modal form submit -> WhatsApp */
+modalForm.addEventListener('submit', (e)=>{
+  e.preventDefault();
+  const customerName = document.getElementById('customerName').value.trim();
+  const customerLocation = document.getElementById('customerLocation').value.trim();
+  const customerPhone = document.getElementById('customerPhone').value.trim();
+  const whatsapp = document.getElementById('whatsappNumber').value;
+  const product = modalTitle.innerText;
+  const price = modalPrice.innerText;
+  if(!whatsapp){ alert('Choose WhatsApp number'); return; }
+  const message = `Booking Details:%0AProduct: ${product}%0APrice: ${price}%0AName: ${encodeURIComponent(customerName)}%0ALocation: ${encodeURIComponent(customerLocation)}%0ATelephone: ${encodeURIComponent(customerPhone)}`;
+  const wa = '233' + whatsapp.slice(1);
+  window.open(`https://wa.me/${wa}?text=${message}`, '_blank');
+});
+
+/* Filters & search */
+let activeFilter = 'all';
+function setTab(btn){ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active'); activeFilter = btn.dataset.filter; applyFilters(true); }
+function applyFilters(animate=false){
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  document.querySelectorAll('.card').forEach(card=>{
+    const type = card.dataset.type;
+    const name = card.querySelector('.title').innerText.toLowerCase();
+    const specs = card.querySelector('.spec').innerText.toLowerCase();
+    const price = card.querySelector('.price').innerText.toLowerCase();
+    let show = true;
+    if(activeFilter !== 'all' && type !== activeFilter) show = false;
+    if(q && !(name.includes(q) || specs.includes(q) || price.includes(q))) show = false;
+    card.style.display = show ? 'flex' : 'none';
+  });
+  if(animate){
+    document.getElementById('productGrid').style.opacity = '0.5';
+    setTimeout(()=> document.getElementById('productGrid').style.opacity = '1', 200);
+  }
+}
+function clearSearch(){ document.getElementById('searchInput').value=''; applyFilters(true); }
+
+/* Initialize */
+document.addEventListener('DOMContentLoaded', ()=>{
+  loadAll();
+  // attach image taps and long-press for cards
+  document.querySelectorAll('.card').forEach(card=> attachImageTap(card));
+  // open card click to view details
+  document.querySelectorAll('.card').forEach(card=> card.addEventListener('click', ()=> openModalFromCard(card)));
+  // reveal grid smoothly
+  setTimeout(()=> document.getElementById('productGrid').classList.add('visible'), 80);
+});
+
+// Save before unload
+window.addEventListener('beforeunload', saveAll);
+
+</script>
+</body>
+</html>
